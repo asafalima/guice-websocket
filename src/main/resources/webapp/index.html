@@ -21,6 +21,16 @@
             </button>
             <a class="navbar-brand" href="#">Websocket</a>
         </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="#" onclick="connect(); return false;">Connect</a></li>
+                <li><a href="#" onclick="disconnect(); return false;">Disconnect</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#" onclick="document.cookie = 'accessToken=top-secret-token; expires=Fri, 31 Dec 9999 23:59:59 GMT'; return false;">Set Auth Cookie</a></li>
+                <li><a href="#" onclick="document.cookie = 'accessToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT'; return false">Remove Auth Cookie</a></li>
+            </ul>
+        </div>
     </div>
 </nav>
 <div class="container-fluid">
@@ -28,18 +38,18 @@
         <div class="col-md-12">
             <div id="output-view" style="width: 100%; padding-bottom: 80px; overflow:auto"></div>
             <form class="form-inline" style="background-color: white; position: fixed; bottom: 0; left: 0; right: 0; padding: 20px" onsubmit="return sendMessage()">
-                <div class="form-group" style="padding-right: 70px; width: 100%;">
-                    <input type="text" class="form-control" id="messageBody" placeholder="Message..." style="width: 100%"/>
+                <div class="form-group" style="padding-right: 70px; width: 100%;float: left;">
+                    <input type="text" class="form-control" id="messageBody" placeholder="Message..." style="width: 100%" disabled />
                 </div>
-                <button type="submit" class="btn btn-primary" id="sendBtn" style="position: absolute; right: 20px">Send</button>
+                <button type="submit" class="btn btn-primary" id="sendBtn" style="position: absolute; right: 20px" disabled>Send</button>
             </form>
         </div>
     </div>
 </div>
 <script language="javascript" type="text/javascript">
     var wsUri = "ws://localhost:8080/echo";
-    function init() {
-        websocket = new WebSocket(wsUri);
+    function connect() {
+        var websocket = new WebSocket(wsUri);
         websocket.onopen = function (evt) {
             writeOutput('<strong style="color: darkgrey">Contented to server</strong>');
             setEnabled(true);
@@ -57,6 +67,14 @@
             writeOutput('<strong style="color: red">Error: ' + evt.data + '</strong>');
             setEnabled(false);
         };
+
+        window.websocket = websocket;
+    }
+
+    function disconnect() {
+        if (typeof window.websocket !== 'undefined') {
+            window.websocket.close();
+        }
     }
 
     function sendMessage() {
@@ -83,7 +101,6 @@
             document.getElementById('sendBtn').setAttribute('disabled', 'disabled');
         }
     }
-    window.addEventListener("load", init, false);
 </script>
 </body>
 </html>

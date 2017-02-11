@@ -33,16 +33,22 @@ public class AuthenticationFilter implements Filter {
         if ((request instanceof HttpServletRequest) && (response instanceof HttpServletResponse)) {
             HttpServletRequest httpServletRequest = (HttpServletRequest) request;
             HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-            Cookie[] cookies = httpServletRequest.getCookies();
-            for (Cookie cookie : cookies) {
-                //if (cookie.getName().equals("accessToken") && cookie.getValue().equals("top-secret-token")) {
-                if (cookie.getName().equals("__utma") && cookie.getValue().equals("111872281.1941175145.1475325529.1475538295.1477149284.3")) {
-                    LOGGER.info("Finish checking client - client is authenticated");
-                    chain.doFilter(request, response);
-                    return;
-                }
+
+            if (!httpServletRequest.getServletPath().equals("/echo")) {
+                chain.doFilter(request, response);
+                return;
             }
 
+            Cookie[] cookies = httpServletRequest.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("accessToken") && cookie.getValue().equals("top-secret-token")) {
+                        LOGGER.info("Finish checking client - client is authenticated");
+                        chain.doFilter(request, response);
+                        return;
+                    }
+                }
+            }
 
             LOGGER.warn("Finish checking client - client is unauthenticated !");
             httpServletResponse.setStatus(401);
