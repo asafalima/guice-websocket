@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>WebSocket with Jetty and Guice</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Websocket</a>
+        </div>
+    </div>
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div id="output-view" style="width: 100%; padding-bottom: 80px; overflow:auto"></div>
+            <form class="form-inline" style="background-color: white; position: fixed; bottom: 0; left: 0; right: 0; padding: 20px" onsubmit="return sendMessage()">
+                <div class="form-group" style="padding-right: 70px; width: 100%;">
+                    <input type="text" class="form-control" id="messageBody" placeholder="Message..." style="width: 100%"/>
+                </div>
+                <button type="submit" class="btn btn-primary" id="sendBtn" style="position: absolute; right: 20px">Send</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script language="javascript" type="text/javascript">
+    var wsUri = "ws://localhost:8080/echo";
+    function init() {
+        websocket = new WebSocket(wsUri);
+        websocket.onopen = function (evt) {
+            writeOutput('<strong style="color: darkgrey">Contented to server</strong>');
+            setEnabled(true);
+        };
+        websocket.onmessage = function (evt) {
+            writeOutput('Server: ' + evt.data);
+        };
+
+        websocket.onclose = function (evt) {
+            writeOutput('<strong style="color: darkgrey">Disconnected!</strong>');
+            setEnabled(false);
+        };
+
+        websocket.onerror = function (evt) {
+            writeOutput('<strong style="color: red">Error: ' + evt.data + '</strong>');
+            setEnabled(false);
+        };
+    }
+
+    function sendMessage() {
+        var messageToSend = document.getElementById('messageBody').value;
+        websocket.send(messageToSend);
+        document.getElementById('messageBody').value = '';
+        writeOutput("Sent: " + messageToSend);
+
+        return false;
+    }
+
+    function writeOutput(message) {
+        var line = document.createElement("p");
+        line.innerHTML = message;
+        document.getElementById('output-view').appendChild(line);
+    }
+
+    function setEnabled(isEnabled) {
+        if (isEnabled) {
+            document.getElementById('sendBtn').removeAttribute('disabled');
+            document.getElementById('messageBody').removeAttribute('disabled');
+        } else {
+            document.getElementById('messageBody').setAttribute('disabled', 'disabled');
+            document.getElementById('sendBtn').setAttribute('disabled', 'disabled');
+        }
+    }
+    window.addEventListener("load", init, false);
+</script>
+</body>
+</html>
