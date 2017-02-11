@@ -51,7 +51,7 @@
     function connect() {
         var websocket = new WebSocket(wsUri);
         websocket.onopen = function (evt) {
-            writeOutput('<strong style="color: darkgrey">Contented to server</strong>');
+            writeOutput('<strong style="color: darkgrey">Connected to server</strong>');
             setEnabled(true);
         };
         websocket.onmessage = function (evt) {
