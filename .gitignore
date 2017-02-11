@@ -1,0 +1,24 @@
+# Package Files #
+*.jar
+*.war
+*.ear
+/.buildpath
+/.classpath
+/.project
+/.settings
+/velocity.log
+/bin
+/target
+*.idea
+*.ids
+*.iml
+*.ipr
+*.iws
+.DS_Store
+*.orig
+.externalToolBuilders
+rebel.xml
+tmp/
+/cookbooks/
+.vagrant
+*.log
