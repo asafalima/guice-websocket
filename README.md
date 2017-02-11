@@ -1,6 +1,6 @@
 #guice-websocket
 
-Websockets using Embedded Jetty and Guice
+Example project demonstrating how to integrate Websocket on top of Jetty with Guice support
 
 ![Main Screen](/screenshots/chat-view.png?raw=true "Chat View")
 
